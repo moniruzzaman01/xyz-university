@@ -1,28 +1,33 @@
 import { Request, Response } from "express";
-import { createAnUserToDB } from "./user.service";
-import { z } from "zod";
 import { userValidation } from "./user.validation";
+import { userServices } from "./user.service";
 
-const createAnUser = async (req: Request, res: Response) => {
+const createAStudent = async (req: Request, res: Response) => {
   try {
-    const userData = req.body;
+    const { password, student } = req.body;
     //zod validation
-    const validation = userValidation.safeParse(userData);
+    // const validation = userValidation.safeParse(userData);
 
-    if (validation.success) {
-      const result = await createAnUserToDB(validation.data);
-      res.status(200).json({
-        success: true,
-        message: "user created successfully!",
-        data: result,
-      });
-    } else {
-      res.status(400).json({
-        success: true,
-        message: "user validation failed!",
-        data: validation.error,
-      });
-    }
+    const result = await userServices.createAStudentIntoDB(password, student);
+    res.status(200).json({
+      success: true,
+      message: "user created successfully!",
+      data: result,
+    });
+    // if (validation.success) {
+    //   const result = await userService.createAStudentIntoDB(password, student);
+    //   res.status(200).json({
+    //     success: true,
+    //     message: "user created successfully!",
+    //     data: result,
+    //   });
+    // } else {
+    //   res.status(400).json({
+    //     success: true,
+    //     message: "user validation failed!",
+    //     data: validation.error,
+    //   });
+    // }
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -32,4 +37,4 @@ const createAnUser = async (req: Request, res: Response) => {
   }
 };
 
-export default { createAnUser };
+export default { createAStudent };
