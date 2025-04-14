@@ -12,5 +12,6 @@ semesterRouter.post(
   semesterController.createASemester
 );
 semesterRouter.get("/:id", semesterController.getASemester);
+semesterRouter.patch("/:id", semesterController.updateASemester);
 
 export default semesterRouter;
