@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import catchAsync from "../../utils/catchAsync";
 import { semesterServices } from "./semester.service";
 
@@ -13,4 +14,26 @@ const createASemester = catchAsync(async (req, res, _next) => {
   });
 });
 
-export default { createASemester };
+const getAllSemesters = catchAsync(async (_req, res, _next) => {
+  const allSemesters = await semesterServices.getAllSemestersFromDB();
+  res.status(200).json({
+    success: true,
+    message: "all semesters fetched successfully!",
+    data: allSemesters,
+  });
+});
+
+const getASemester = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  if (!isValidObjectId(id)) {
+    throw new Error("Not a valid objectId!");
+  }
+  const singleSemester = await semesterServices.getASemesterFromDB(id);
+  res.status(200).json({
+    success: true,
+    message: "successfully fetched a semester filtered by id!",
+    data: singleSemester,
+  });
+});
+
+export default { createASemester, getAllSemesters, getASemester };
