@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const userValidation = z.object({
+export const createUserValidationSchema = z.object({
   // id: z.string({ message: "id is required and must be a string!" }),
   password: z
     .string({ message: "password is required and must be a string!" })
@@ -18,3 +18,6 @@ export const userValidation = z.object({
   //   message: "isDeleted is required and must be a boolean!",
   // }),
 });
+export const userValidation = {
+  createUserValidationSchema,
+};

@@ -1,22 +1,15 @@
-import { NextFunction, Request, Response } from "express";
 import { studentServices } from "./student.service";
+import catchAsync from "../../utils/catchAsync";
 
-const getAllStudents = async (
-  _req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const result = await studentServices.getAllStudentsFromDB();
-    res.status(200).json({
-      success: true,
-      message: "All students fetched successfully!",
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+const getAllStudents = catchAsync(async (_req, res, _next) => {
+  const result = await studentServices.getAllStudentsFromDB();
+  res.status(200).json({
+    success: true,
+    message: "All students fetched successfully!",
+    data: result,
+  });
+});
+
 export = {
   getAllStudents,
 };
