@@ -10,5 +10,7 @@ facultyRouter.post(
   validateRequest(facultyValidation.createFacultyValidationSchema),
   facultyController.createAFaculty
 );
+facultyRouter.get("/", facultyController.getAllFaculties);
+facultyRouter.get("/:id", facultyController.getAFaculty);
 
 export default facultyRouter;
