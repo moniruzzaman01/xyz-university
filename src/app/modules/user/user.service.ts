@@ -1,6 +1,8 @@
 import config from "../../config";
+import Semester from "../semester/semester.model";
 import { Student } from "../student/student.model";
 import { TStudent } from "../student/student.type";
+import { generateStudentId } from "./student.utils";
 import User from "./user.model";
 import { TUser } from "./user.type";
 
@@ -12,7 +14,11 @@ const createAStudentIntoDB = async (password: string, payload: TStudent) => {
   //set student role
   userData.role = "student";
   //set generated user id
-  userData.id = "2030100002";
+  const semester = await Semester.findById(payload.admissionSemester);
+  if (!semester) {
+    throw new Error("Semester not found with the given ID.");
+  }
+  userData.id = await generateStudentId(semester);
   //create an user
   const newUser = await User.create(userData);
 
