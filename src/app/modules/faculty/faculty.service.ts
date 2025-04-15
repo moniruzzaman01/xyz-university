@@ -11,9 +11,13 @@ const getAllFacultiesFromDB = async () => {
 const getAFacultyFromDB = async (id: string) => {
   return await Faculty.findById(id);
 };
+const updateAFacultyFromDB = async (id: string, payload: Partial<TFaculty>) => {
+  return await Faculty.findOneAndUpdate({ _id: id }, payload, { new: true });
+};
 
 export const facultyService = {
   createAFacultyIntoDB,
   getAllFacultiesFromDB,
   getAFacultyFromDB,
+  updateAFacultyFromDB,
 };
