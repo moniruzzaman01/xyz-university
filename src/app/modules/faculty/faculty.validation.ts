@@ -7,7 +7,17 @@ const createFacultyValidationSchema = z.object({
     }),
   }),
 });
+const updateFacultyValidationSchema = z.object({
+  body: z.object({
+    name: z
+      .string({
+        message: "Faculty name must be a string!",
+      })
+      .min(2),
+  }),
+});
 
 export const facultyValidation = {
   createFacultyValidationSchema,
+  updateFacultyValidationSchema,
 };

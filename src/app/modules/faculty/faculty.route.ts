@@ -12,6 +12,10 @@ facultyRouter.post(
 );
 facultyRouter.get("/", facultyController.getAllFaculties);
 facultyRouter.get("/:id", facultyController.getAFaculty);
-facultyRouter.patch("/:id", facultyController.updateAFaculty);
+facultyRouter.patch(
+  "/:id",
+  validateRequest(facultyValidation.updateFacultyValidationSchema),
+  facultyController.updateAFaculty
+);
 
 export default facultyRouter;
