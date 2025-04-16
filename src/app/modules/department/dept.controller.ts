@@ -10,7 +10,26 @@ const createADept = catchAsync(async (req, res, _next) => {
     data: newDept,
   });
 });
+const getAllDepts = catchAsync(async (req, res, _next) => {
+  const allDepts = await deptService.getAllDeptsFromDB();
+  res.status(200).json({
+    success: true,
+    message: "all department fetched successfully!",
+    data: allDepts,
+  });
+});
+const getADept = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  const singleDept = await deptService.getADeptFromDB(id);
+  res.status(200).json({
+    success: true,
+    message: "single department fetched successfully!",
+    data: singleDept,
+  });
+});
 
 export = {
   createADept,
+  getAllDepts,
+  getADept,
 };
