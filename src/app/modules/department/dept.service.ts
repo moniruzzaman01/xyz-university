@@ -10,9 +10,13 @@ const getAllDeptsFromDB = async () => {
 const getADeptFromDB = async (id: string) => {
   return await Dept.findById(id);
 };
+const updateADeptFromDB = async (id: string, payload: Partial<TDept>) => {
+  return await Dept.findOneAndUpdate({ _id: id }, payload, { new: true });
+};
 
 export const deptService = {
   createADeptIntoDB,
   getAllDeptsFromDB,
   getADeptFromDB,
+  updateADeptFromDB,
 };
