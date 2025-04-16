@@ -6,7 +6,14 @@ const createDeptValidationSchema = z.object({
     faculty: z.string(),
   }),
 });
+const updateDeptValidationSchema = z.object({
+  body: z.object({
+    name: z.string().optional(),
+    faculty: z.string().optional(),
+  }),
+});
 
 export const deptValidation = {
   createDeptValidationSchema,
+  updateDeptValidationSchema,
 };
