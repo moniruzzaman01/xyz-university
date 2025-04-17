@@ -5,10 +5,10 @@ const createADeptIntoDB = async (payload: TDept) => {
   return await Dept.create(payload);
 };
 const getAllDeptsFromDB = async () => {
-  return await Dept.find({});
+  return await Dept.find({}).populate("faculty");
 };
 const getADeptFromDB = async (id: string) => {
-  return await Dept.findById(id);
+  return await Dept.findById(id).populate("faculty");
 };
 const updateADeptFromDB = async (id: string, payload: Partial<TDept>) => {
   return await Dept.findOneAndUpdate({ _id: id }, payload, { new: true });

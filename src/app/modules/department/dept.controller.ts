@@ -34,18 +34,11 @@ const updateADept = catchAsync(async (req, res, _next) => {
     throw new Error("not a valid objectId!");
   }
   const updatedInfo = await deptService.updateADeptFromDB(id, req.body);
-  if (!updatedInfo) {
-    res.status(404).json({
-      success: false,
-      message: `couldn't find the department data using the id:${id}`,
-    });
-  } else {
-    res.status(200).json({
-      success: true,
-      message: "department data updated successfully!",
-      data: updatedInfo,
-    });
-  }
+  res.status(200).json({
+    success: true,
+    message: "department data updated successfully!",
+    data: updatedInfo,
+  });
 });
 
 export = {
