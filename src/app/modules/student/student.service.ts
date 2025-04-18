@@ -2,12 +2,22 @@ import mongoose from "mongoose";
 import { Student } from "./student.model";
 import User from "../user/user.model";
 import AppError from "../../utils/AppError";
+import { TStudent } from "./student.type";
 
 const getAllStudentsFromDB = async () => {
   return await Student.find({}).populate("user").populate("semester").populate({
     path: "department",
     populate: "faculty",
   });
+};
+const getAStudentFromDB = async (id: string) => {
+  return await Student.findOne({ id })
+    .populate("user")
+    .populate("semester")
+    .populate({
+      path: "department",
+      populate: "faculty",
+    });
 };
 const deleteAStudentFromDB = async (id: string) => {
   const session = await mongoose.startSession();
@@ -40,8 +50,37 @@ const deleteAStudentFromDB = async (id: string) => {
     throw new Error(error.message);
   }
 };
+const updateAStudentIntoDB = async (id: string, payload: TStudent) => {
+  const { name, guardian, localGuardian, ...remainingStudentData } = payload;
+
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remainingStudentData,
+  };
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${key}`] = value;
+    }
+  }
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdatedData[`guardian.${key}`] = value;
+    }
+  }
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
+    }
+  }
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
 
 export const studentServices = {
   getAllStudentsFromDB,
   deleteAStudentFromDB,
+  updateAStudentIntoDB,
+  getAStudentFromDB,
 };
