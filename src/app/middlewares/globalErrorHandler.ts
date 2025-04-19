@@ -36,13 +36,31 @@ const globalErrorHanlder: ErrorRequestHandler = (
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
   }
+  //mongodb cast error formatting
+  else if (err instanceof mongoose.Error.CastError) {
+    console.log(err);
+    statusCode = 400;
+    message = "invalid mongodb id!";
+    errorSources = [{ path: err.path, message: err.message }];
+  }
+  //mongodb duplicate value error formatting
+  if ((err.code = 11000)) {
+    const duplicateField = Object.keys(err.keyValue || {})[0];
+    statusCode = 400;
+    message = "validation error!";
+    errorSources = [
+      {
+        path: duplicateField,
+        message: duplicateField + " must be unique!",
+      },
+    ];
+  }
 
   res.status(statusCode).json({
     success,
     message,
     errorSources,
-    // stack: config.node_env == "development" ? err.stack : null,
-    err,
+    stack: config.node_env == "development" ? err.stack : null,
   });
 };
 

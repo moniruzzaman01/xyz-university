@@ -21,9 +21,6 @@ const getAllFaculties = catchAsync(async (req, res, _next) => {
 });
 const getAFaculty = catchAsync(async (req, res, _next) => {
   const { id } = req.params;
-  if (!isValidObjectId(id)) {
-    throw new Error("Not a valid objectId!");
-  }
   const singleFaculty = await facultyService.getAFacultyFromDB(id);
   res.status(200).json({
     success: true,
