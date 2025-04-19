@@ -8,3 +8,8 @@ export type TBloodGroup =
   | "AB-"
   | "O+"
   | "O-";
+export type TUserName = {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+};
