@@ -6,9 +6,19 @@ const createAStudent = catchAsync(async (req, res, _next) => {
   const result = await userServices.createAStudentIntoDB(password, student);
   res.status(200).json({
     success: true,
-    message: "user created successfully!",
+    message: "student user created successfully!",
     data: result,
   });
 });
 
-export default { createAStudent };
+const createATeacher = catchAsync(async (req, res, _next) => {
+  const { password, teacher } = req.body;
+  const result = await userServices.createATeacherIntoDB(password, teacher);
+  res.status(200).json({
+    success: true,
+    message: "teacher user created successfully",
+    data: result,
+  });
+});
+
+export default { createAStudent, createATeacher };

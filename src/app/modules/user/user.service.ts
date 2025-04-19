@@ -7,6 +7,10 @@ import { generateStudentId } from "./student.utils";
 import User from "./user.model";
 import { TUser } from "./user.type";
 import AppError from "../../utils/AppError";
+import { TTeacher } from "../teacher/teacher.type";
+import Dept from "../department/dept.model";
+import Teacher from "../teacher/teacher.model";
+import { generateTeacherId } from "../teacher/teacher.utils";
 
 const createAStudentIntoDB = async (password: string, payload: TStudent) => {
   //create an empty user object
@@ -47,6 +51,42 @@ const createAStudentIntoDB = async (password: string, payload: TStudent) => {
   }
 };
 
+const createATeacherIntoDB = async (password: string, payload: TTeacher) => {
+  const userData: Partial<TUser> = {};
+  userData.password = password || config.default_pass;
+  userData.role = "teacher";
+
+  const department = await Dept.findById(payload.department);
+  if (!department) {
+    throw new AppError(400, "Invalid department id!");
+  }
+
+  //mongoose transaction
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    userData.id = await generateTeacherId();
+
+    const newUser = new User(userData);
+    await newUser.save({ session });
+
+    payload.id = newUser.id;
+    payload.user = newUser._id;
+
+    const newTeacher = new Teacher(payload);
+    await newTeacher.save({ session });
+
+    await session.commitTransaction();
+    await session.endSession();
+    return newTeacher;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
+  }
+};
+
 export const userServices = {
   createAStudentIntoDB,
+  createATeacherIntoDB,
 };
