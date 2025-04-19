@@ -9,12 +9,29 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   if (query.searchParam) {
     searchParam = query.searchParam as string;
   }
+  const searchCondition = searchParam
+    ? {
+        $or: [
+          "email",
+          "name.firstName",
+          "name.middleName",
+          "name.lastName",
+        ].map((field) => ({ [field]: { $regex: searchParam, $options: "i" } })),
+      }
+    : {}; //search condition will create if the search param exist
 
-  return await Student.find({
-    $or: ["email", "name.firstName", "name.middleName", "name.lastName"].map(
-      (field) => ({ [field]: { $regex: searchParam, $options: "i" } })
-    ),
-  })
+  const filter = { ...query }; //create a copy of query
+  ["searchParam", "sort", "limit"].forEach((el) => delete filter[el]); //remove other property (searchParam, sort, limit) from the filter except query field
+
+  let sort = "-createdAt"; //default sort
+  if (query.sort) sort = query.sort as string; //sort from query data
+
+  let limit = 10; //default limit 10 data
+  if (query.limit) limit = Number(query.limit); //limit data from query
+
+  return await Student.find({ ...searchCondition, ...filter })
+    .sort(sort)
+    .limit(limit)
     .populate("user")
     .populate("semester")
     .populate({
