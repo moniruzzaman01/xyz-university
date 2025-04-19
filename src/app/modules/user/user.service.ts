@@ -28,9 +28,7 @@ const createAStudentIntoDB = async (password: string, payload: TStudent) => {
     //create an user
     const newUser = new User(userData);
     await newUser.save({ session });
-    if (!newUser.id) {
-      throw new AppError(400, "failed to create an user!");
-    }
+
     //embded user generated id and reference user _id
     payload.id = newUser.id;
     payload.user = newUser._id;
@@ -38,16 +36,14 @@ const createAStudentIntoDB = async (password: string, payload: TStudent) => {
     //create a student
     const newStudent = new Student(payload);
     await newStudent.save({ session });
-    if (!newStudent.id) {
-      throw new AppError(400, "failed to create a student!");
-    }
+
     await session.commitTransaction();
     await session.endSession();
     return newStudent;
   } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new Error(error.message);
+    throw error;
   }
 };
 

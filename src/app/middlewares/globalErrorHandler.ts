@@ -1,19 +1,48 @@
-import { NextFunction, Request, Response } from "express";
+import { ErrorRequestHandler } from "express";
+import { ZodError } from "zod";
+import zodErrorHandler from "../utils/zodErrorHandler";
+import config from "../config";
+import { TErrorSources } from "../globalTypes/error";
+import mongoose from "mongoose";
+import { mongooseValidationErrorHanlder } from "../utils/mongooseValidationErrorHanlder";
 
-const globalErrorHanlder = (
-  err: any,
-  _req: Request,
-  res: Response,
-  _next: NextFunction
+const globalErrorHanlder: ErrorRequestHandler = (
+  err,
+  _req,
+  res,
+  _next
 ): any => {
-  const statusCode = err.statusCode || 500;
-  const success = false;
-  const message = err.message || "Something went wrong!";
+  let success = false;
+  let statusCode = 500;
+  let message = "something went wrong!";
+  let errorSources: TErrorSources = [
+    {
+      path: "",
+      message: "something went wrong!",
+    },
+  ];
+
+  //handle zod error formatting
+  if (err instanceof ZodError) {
+    const simplifiedError = zodErrorHandler(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
+  }
+  //mongoose validation error formatting
+  else if (err instanceof mongoose.Error.ValidationError) {
+    const simplifiedError = mongooseValidationErrorHanlder(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
+  }
 
   res.status(statusCode).json({
     success,
     message,
-    error: err,
+    errorSources,
+    // stack: config.node_env == "development" ? err.stack : null,
+    err,
   });
 };
 
