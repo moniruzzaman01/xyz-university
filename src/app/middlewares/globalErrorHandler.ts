@@ -55,12 +55,24 @@ const globalErrorHanlder: ErrorRequestHandler = (
       },
     ];
   }
+  //mongodb inclusion and exclution error formatting
+  if ((err.code = 31254)) {
+    statusCode = 400;
+    message = "Mongodb server error!";
+    errorSources = [
+      {
+        path: "",
+        message: err.message,
+      },
+    ];
+  }
 
   res.status(statusCode).json({
     success,
     message,
     errorSources,
     stack: config.node_env == "development" ? err.stack : null,
+    err,
   });
 };
 
