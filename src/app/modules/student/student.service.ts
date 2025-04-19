@@ -21,16 +21,23 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     : {}; //search condition will create if the search param exist
 
   const filter = { ...query }; //create a copy of query
-  ["searchParam", "sort", "limit"].forEach((el) => delete filter[el]); //remove other property (searchParam, sort, limit) from the filter except query field
+  ["searchParam", "sort", "limit", "page"].forEach((el) => delete filter[el]); //remove other property (searchParam, sort, limit) from the filter except query field
 
   let sort = "-createdAt"; //default sort
   if (query.sort) sort = query.sort as string; //sort from query data
 
-  let limit = 10; //default limit 10 data
-  if (query.limit) limit = Number(query.limit); //limit data from query
+  let limit = 10; //default limit no 10
+  let page = 0; //default page no 0
+  let skip = 0; //default skip 0
+  if (query.page) page = Number(query.page); //set page no from query
+  if (query.limit) limit = Number(query.limit); //set limit no from query
+  if (page) skip = (page - 1) * limit; //calculate how many data will be skipped
+
+  console.log(limit, page, skip);
 
   return await Student.find({ ...searchCondition, ...filter })
     .sort(sort)
+    .skip(skip)
     .limit(limit)
     .populate("user")
     .populate("semester")
