@@ -33,8 +33,6 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   if (query.limit) limit = Number(query.limit); //set limit no from query
   if (page) skip = (page - 1) * limit; //calculate how many data will be skipped
 
-  console.log(limit, page, skip);
-
   return await Student.find({ ...searchCondition, ...filter })
     .sort(sort)
     .skip(skip)
