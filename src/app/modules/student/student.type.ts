@@ -1,11 +1,5 @@
 import { Types } from "mongoose";
-import { TBloodGroup, TGender } from "../../globalTypes";
-
-export type TUserName = {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-};
+import { TBloodGroup, TGender, TUserName } from "../../globalTypes";
 
 export type TGuardian = {
   fatherName: string;
