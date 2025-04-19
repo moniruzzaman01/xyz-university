@@ -3,6 +3,7 @@ import { Student } from "./student.model";
 import User from "../user/user.model";
 import AppError from "../../utils/AppError";
 import { TStudent } from "./student.type";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   let searchParam = "";
@@ -21,7 +22,9 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     : {}; //search condition will create if the search param exist
 
   const filter = { ...query }; //create a copy of query
-  ["searchParam", "sort", "limit", "page"].forEach((el) => delete filter[el]); //remove other property (searchParam, sort, limit) from the filter except query field
+  ["searchParam", "sort", "limit", "page", "fields"].forEach(
+    (el) => delete filter[el]
+  ); //remove other property (searchParam, sort, limit) from the filter except query field
 
   let sort = "-createdAt"; //default sort
   if (query.sort) sort = query.sort as string; //sort from query data
@@ -33,10 +36,20 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   if (query.limit) limit = Number(query.limit); //set limit no from query
   if (page) skip = (page - 1) * limit; //calculate how many data will be skipped
 
-  return await Student.find({ ...searchCondition, ...filter })
+  //fields limiting
+  let fields = "-__v";
+  if (query.fields) fields = (query.fields as string).split(",").join(" ");
+  console.log("fields", fields);
+  const queryBuilder = new QueryBuilder(Student.find(), query)
+    .search(["email", "name.firstName"])
+    .build();
+
+  // return await Student.find({ ...searchCondition, ...filter })
+  return queryBuilder
     .sort(sort)
     .skip(skip)
     .limit(limit)
+    .select(fields)
     .populate("user")
     .populate("semester")
     .populate({
