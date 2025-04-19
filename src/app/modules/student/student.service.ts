@@ -4,11 +4,23 @@ import User from "../user/user.model";
 import AppError from "../../utils/AppError";
 import { TStudent } from "./student.type";
 
-const getAllStudentsFromDB = async () => {
-  return await Student.find({}).populate("user").populate("semester").populate({
-    path: "department",
-    populate: "faculty",
-  });
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  let searchParam = "";
+  if (query.searchParam) {
+    searchParam = query.searchParam as string;
+  }
+
+  return await Student.find({
+    $or: ["email", "name.firstName", "name.middleName", "name.lastName"].map(
+      (field) => ({ [field]: { $regex: searchParam, $options: "i" } })
+    ),
+  })
+    .populate("user")
+    .populate("semester")
+    .populate({
+      path: "department",
+      populate: "faculty",
+    });
 };
 const getAStudentFromDB = async (id: string) => {
   return await Student.findOne({ id })
