@@ -44,7 +44,7 @@ const globalErrorHanlder: ErrorRequestHandler = (
     errorSources = [{ path: err.path, message: err.message }];
   }
   //mongodb duplicate value error formatting
-  if ((err.code = 11000)) {
+  else if ((err.code = 11000)) {
     const duplicateField = Object.keys(err.keyValue || {})[0];
     statusCode = 400;
     message = "validation error!";
@@ -56,7 +56,7 @@ const globalErrorHanlder: ErrorRequestHandler = (
     ];
   }
   //mongodb inclusion and exclution error formatting
-  if ((err.code = 31254)) {
+  else if ((err.code = 31254)) {
     statusCode = 400;
     message = "Mongodb server error!";
     errorSources = [
