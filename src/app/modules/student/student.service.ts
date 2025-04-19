@@ -6,57 +6,23 @@ import { TStudent } from "./student.type";
 import QueryBuilder from "../../builder/QueryBuilder";
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  let searchParam = "";
-  if (query.searchParam) {
-    searchParam = query.searchParam as string;
-  }
-  const searchCondition = searchParam
-    ? {
-        $or: [
-          "email",
-          "name.firstName",
-          "name.middleName",
-          "name.lastName",
-        ].map((field) => ({ [field]: { $regex: searchParam, $options: "i" } })),
-      }
-    : {}; //search condition will create if the search param exist
-
-  const filter = { ...query }; //create a copy of query
-  ["searchParam", "sort", "limit", "page", "fields"].forEach(
-    (el) => delete filter[el]
-  ); //remove other property (searchParam, sort, limit) from the filter except query field
-
-  let sort = "-createdAt"; //default sort
-  if (query.sort) sort = query.sort as string; //sort from query data
-
-  let limit = 10; //default limit no 10
-  let page = 0; //default page no 0
-  let skip = 0; //default skip 0
-  if (query.page) page = Number(query.page); //set page no from query
-  if (query.limit) limit = Number(query.limit); //set limit no from query
-  if (page) skip = (page - 1) * limit; //calculate how many data will be skipped
-
-  //fields limiting
-  let fields = "-__v";
-  if (query.fields) fields = (query.fields as string).split(",").join(" ");
-  console.log("fields", fields);
   const queryBuilder = new QueryBuilder(Student.find(), query)
     .search(["email", "name.firstName"])
-    .build();
-
-  // return await Student.find({ ...searchCondition, ...filter })
-  return queryBuilder
-    .sort(sort)
-    .skip(skip)
-    .limit(limit)
-    .select(fields)
+    .filter()
+    .sort()
+    .pagination()
+    .projection()
+    .build() //this call will return queryModel for further required calls
     .populate("user")
     .populate("semester")
     .populate({
       path: "department",
       populate: "faculty",
     });
+
+  return await queryBuilder;
 };
+
 const getAStudentFromDB = async (id: string) => {
   return await Student.findOne({ id })
     .populate("user")
@@ -66,6 +32,7 @@ const getAStudentFromDB = async (id: string) => {
       populate: "faculty",
     });
 };
+
 const deleteAStudentFromDB = async (id: string) => {
   const session = await mongoose.startSession();
   try {
@@ -97,6 +64,7 @@ const deleteAStudentFromDB = async (id: string) => {
     throw new Error(error.message);
   }
 };
+
 const updateAStudentIntoDB = async (id: string, payload: TStudent) => {
   const { name, guardian, localGuardian, ...remainingStudentData } = payload;
 
