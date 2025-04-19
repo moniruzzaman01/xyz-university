@@ -1,7 +1,8 @@
 import { Schema, model } from "mongoose";
-import { TGuardian, TLocalGuardian, TStudent, TUserName } from "./student.type";
+import { TGuardian, TLocalGuardian, TStudent } from "./student.type";
+import { TName } from "../../globalTypes";
 
-const userNameSchema = new Schema<TUserName>({
+const userNameSchema = new Schema<TName>({
   firstName: {
     type: String,
     required: [true, "First Name is required"],

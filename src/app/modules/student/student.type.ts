@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { TBloodGroup, TGender, TUserName } from "../../globalTypes";
+import { TBloodGroup, TGender, TName } from "../../globalTypes";
 
 export type TGuardian = {
   fatherName: string;
@@ -21,7 +21,7 @@ export type TStudent = {
   id: string;
   user: Types.ObjectId;
   password: string;
-  name: TUserName;
+  name: TName;
   gender: TGender;
   dateOfBirth?: string;
   email: string;
