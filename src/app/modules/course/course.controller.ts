@@ -19,7 +19,29 @@ const getAllCourses = catchAsync(async (req, res, _next) => {
   });
 });
 
+const getACourse = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  const singleCourse = await courseServices.getACourseFromDB(id);
+  res.status(200).json({
+    success: true,
+    message: "single course fetched successfully!",
+    data: singleCourse,
+  });
+});
+
+const deleteACourse = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  const deletedData = await courseServices.deleteACourseFromDB(id);
+  res.status(200).json({
+    success: true,
+    message: "single course deleted successfully!",
+    data: deletedData,
+  });
+});
+
 export default {
   createACourse,
   getAllCourses,
+  getACourse,
+  deleteACourse,
 };

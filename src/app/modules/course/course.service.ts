@@ -16,7 +16,17 @@ const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
     .build();
 };
 
+const getACourseFromDB = async (id: string) => {
+  return await Course.findById(id);
+};
+
+const deleteACourseFromDB = async (id: string) => {
+  return await Course.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+};
+
 export const courseServices = {
   createACourseIntoDB,
   getAllCoursesFromDB,
+  getACourseFromDB,
+  deleteACourseFromDB,
 };
