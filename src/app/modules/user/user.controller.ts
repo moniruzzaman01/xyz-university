@@ -21,4 +21,14 @@ const createATeacher = catchAsync(async (req, res, _next) => {
   });
 });
 
-export default { createAStudent, createATeacher };
+const createAnAdmin = catchAsync(async (req, res, _next) => {
+  const { password, admin } = req.body;
+  const result = await userServices.createAnAdminIntoDB(password, admin);
+  res.status(200).json({
+    success: true,
+    message: "teacher user created successfully",
+    data: result,
+  });
+});
+
+export default { createAStudent, createATeacher, createAnAdmin };

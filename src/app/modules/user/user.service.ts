@@ -11,6 +11,9 @@ import { TTeacher } from "../teacher/teacher.type";
 import Dept from "../department/dept.model";
 import Teacher from "../teacher/teacher.model";
 import { generateTeacherId } from "../teacher/teacher.utils";
+import { TAdmin } from "../admin/admin.type";
+import { generateAdminId } from "../admin/admin.utils";
+import Admin from "../admin/admin.model";
 
 const createAStudentIntoDB = async (password: string, payload: TStudent) => {
   //create an empty user object
@@ -86,7 +89,38 @@ const createATeacherIntoDB = async (password: string, payload: TTeacher) => {
   }
 };
 
+const createAnAdminIntoDB = async (password: string, payload: TAdmin) => {
+  const userData: Partial<TUser> = {};
+  userData.password = config.default_pass;
+  userData.role = "admin";
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    userData.id = await generateAdminId();
+
+    const newUser = new User(userData);
+    await newUser.save({ session });
+
+    payload.id = newUser.id;
+    payload.user = newUser._id;
+
+    const newAdmin = new Admin(payload);
+    await newAdmin.save({ session });
+
+    await session.commitTransaction();
+    await session.endSession();
+    return payload;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
+  }
+};
+
 export const userServices = {
   createAStudentIntoDB,
   createATeacherIntoDB,
+  createAnAdminIntoDB,
 };
