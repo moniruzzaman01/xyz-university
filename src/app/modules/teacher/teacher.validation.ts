@@ -33,7 +33,7 @@ const createTeacherValidationSchema = z.object({
           permanentAddress: z.string(),
           profileImg: z.string(),
           department: z.string(),
-          isDeleted: z.boolean(),
+          isDeleted: z.boolean().default(false),
         })
         .strict(),
     })
