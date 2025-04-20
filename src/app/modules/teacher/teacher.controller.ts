@@ -10,6 +10,33 @@ const getAllTeacher = catchAsync(async (req, res, _next) => {
   });
 });
 
+const getATeacher = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  const singleTeacher = await teacherServices.getATeacherFromDB(id);
+  res.status(200).json({
+    success: true,
+    message: singleTeacher
+      ? "single teacher data fetched successfully!"
+      : "No data found!",
+    data: singleTeacher,
+  });
+});
+
+const deleteATeacher = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  const deletedData = await teacherServices.deleteATeacherFromDB(id);
+  console.log("dl", deletedData);
+  res.status(200).json({
+    success: true,
+    message: deletedData
+      ? "teacher data deleted successfully!"
+      : "Something went wrong!",
+    data: deletedData,
+  });
+});
+
 export default {
   getAllTeacher,
+  getATeacher,
+  deleteATeacher,
 };
