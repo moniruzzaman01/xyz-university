@@ -9,6 +9,15 @@ class QueryBuilder<T> {
     this.query = query;
   }
 
+  /**
+   * '----------------------------------'
+   * @param fieldsToBeSearched - An array of string field names to apply the search on.
+   *
+   * @example
+   * // Search by name and email
+   * queryBuilder.search(['name.firstName', 'email']);
+   * @returns The current QueryBuilder instance for chaining.
+   */
   search(fieldsToBeSeached: string[]) {
     const searchText = this.query.searchParam;
     if (searchText) {
