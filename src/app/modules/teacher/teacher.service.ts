@@ -1,7 +1,10 @@
+import mongoose from "mongoose";
 import QueryBuilder from "../../builder/QueryBuilder";
 import Teacher from "./teacher.model";
 import { TTeacher } from "./teacher.type";
 import { teacherValidation } from "./teacher.validation";
+import AppError from "../../utils/AppError";
+import User from "../user/user.model";
 
 const getAllTeacherFromDB = async (query: Record<string, unknown>) => {
   return await new QueryBuilder(Teacher.find(), query)
@@ -43,11 +46,35 @@ const updateATeacherFromDB = async (id: string, payload: Partial<TTeacher>) => {
 };
 
 const deleteATeacherFromDB = async (id: string) => {
-  return await Teacher.findOneAndUpdate(
-    { id },
-    { isDeleted: true },
-    { new: true }
-  );
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    const deletedUser = await User.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session }
+    );
+    if (!deletedUser) {
+      throw new AppError(400, `failed to delete the user with id: ${id}`);
+    }
+    const deletedTeacher = await Teacher.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session }
+    );
+    if (!deletedTeacher) {
+      throw new AppError(400, `failed to delete the teacher with id: ${id}`);
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+    return deletedTeacher;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
+  }
 };
 
 export const teacherServices = {
