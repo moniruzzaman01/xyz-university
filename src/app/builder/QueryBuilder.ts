@@ -70,6 +70,7 @@ class QueryBuilder<T> {
   }
 
   build() {
+    this.queryModel = this.queryModel.find({ isDeleted: false });
     return this.queryModel;
   }
 }
