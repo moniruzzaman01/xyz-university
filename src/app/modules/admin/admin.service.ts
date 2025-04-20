@@ -1,5 +1,6 @@
 import QueryBuilder from "../../builder/QueryBuilder";
 import Admin from "./admin.model";
+import { TAdmin } from "./admin.type";
 
 const getAllAdminFromDB = async (query: Record<string, unknown>) => {
   return await new QueryBuilder(Admin.find(), query)
@@ -23,8 +24,24 @@ const deleteAnAdminFromDB = async (id: string) => {
   );
 };
 
+const updateAnAdminFromDB = async (id: string, payload: TAdmin) => {
+  const { name, ...remaining } = payload;
+  const modifiedPayload: Record<string, unknown> = { ...remaining };
+
+  if (name) {
+    for (let [key, val] of Object.entries(name)) {
+      modifiedPayload[`name.${key}`] = val;
+    }
+  }
+  const updatedAdmin = await Admin.findOneAndUpdate({ id }, modifiedPayload, {
+    new: true,
+  });
+  return updatedAdmin;
+};
+
 export const adminServices = {
   getAllAdminFromDB,
   getAnAdminFromDB,
   deleteAnAdminFromDB,
+  updateAnAdminFromDB,
 };

@@ -34,8 +34,21 @@ const deleteAnAdmin = catchAsync(async (req, res, _next) => {
   });
 });
 
+const updateAnAdmin = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  const updatedAdmin = await adminServices.updateAnAdminFromDB(id, req.body);
+  res.status(200).json({
+    success: true,
+    message: updatedAdmin
+      ? "admin data updated successfully!"
+      : "something went wrong!",
+    data: updatedAdmin,
+  });
+});
+
 export default {
   getAllAdmin,
   getAnAdmin,
   deleteAnAdmin,
+  updateAnAdmin,
 };

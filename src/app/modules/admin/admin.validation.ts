@@ -38,7 +38,29 @@ const createAdminValidationSchema = z.object({
     })
     .strict(),
 });
+const updateAdminValidationSchema = z.object({
+  body: z
+    .object({
+      // admin: z
+      //   .object({
+      designation: z.string().optional(),
+      name: userNameValidationSchema.partial().optional(),
+      gender: z.enum(Gender).optional(),
+      dateOfBirth: z.string().optional(),
+      email: z.string().optional(),
+      contactNo: z.string().optional(),
+      emergencyContactNo: z.string().optional(),
+      bloodGroup: z.enum(BloodGroup).optional(),
+      presentAddress: z.string().optional(),
+      permanentAddress: z.string().optional(),
+      profileImg: z.string().optional(),
+      // })
+      // .strict(),
+    })
+    .strict(),
+});
 
 export const adminValidation = {
   createAdminValidationSchema,
+  updateAdminValidationSchema,
 };
