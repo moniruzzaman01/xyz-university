@@ -33,7 +33,7 @@ const teacherSchema = new Schema<TTeacher>(
       type: Schema.Types.ObjectId,
       required: [true, "User id is required"],
       unique: true,
-      ref: "User",
+      ref: "users",
     },
     designation: {
       type: String,
@@ -81,7 +81,7 @@ const teacherSchema = new Schema<TTeacher>(
     department: {
       type: Schema.Types.ObjectId,
       required: [true, "User id is required"],
-      ref: "User",
+      ref: "departments",
     },
     isDeleted: {
       type: Boolean,
