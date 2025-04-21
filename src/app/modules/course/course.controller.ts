@@ -34,8 +34,18 @@ const deleteACourse = catchAsync(async (req, res, _next) => {
   const deletedData = await courseServices.deleteACourseFromDB(id);
   res.status(200).json({
     success: true,
-    message: "single course deleted successfully!",
+    message: "course deleted successfully!",
     data: deletedData,
+  });
+});
+
+const updateACourse = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  const updatedData = await courseServices.updateACourseFromDB(id, req.body);
+  res.status(200).json({
+    success: true,
+    message: "course updated successfully!",
+    data: updatedData,
   });
 });
 
@@ -44,4 +54,5 @@ export default {
   getAllCourses,
   getACourse,
   deleteACourse,
+  updateACourse,
 };
