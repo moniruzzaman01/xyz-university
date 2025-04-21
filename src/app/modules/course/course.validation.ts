@@ -36,7 +36,17 @@ const updateCourseValidationSchema = z.object({
     .strict(),
 });
 
+const mutateTeacherInCourseValidationSchema = z.object({
+  body: z
+    .object({
+      teachers: z.array(z.string()),
+      course: z.string().optional(),
+    })
+    .strict(),
+});
+
 export const courseValidation = {
   createCourseValidationSchema,
   updateCourseValidationSchema,
+  mutateTeacherInCourseValidationSchema,
 };

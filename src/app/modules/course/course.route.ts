@@ -18,5 +18,15 @@ courseRouter.patch(
   validateRequest(courseValidation.updateCourseValidationSchema),
   courseController.updateACourse
 );
+courseRouter.put(
+  "/:id/assign-teachers",
+  validateRequest(courseValidation.mutateTeacherInCourseValidationSchema),
+  courseController.assignTeachersInCourse
+);
+courseRouter.patch(
+  "/:id/remove-teachers",
+  validateRequest(courseValidation.mutateTeacherInCourseValidationSchema),
+  courseController.removeTeachersFromCourse
+);
 
 export default courseRouter;

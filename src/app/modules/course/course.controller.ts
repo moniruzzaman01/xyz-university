@@ -49,10 +49,38 @@ const updateACourse = catchAsync(async (req, res, _next) => {
   });
 });
 
+const assignTeachersInCourse = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  const insertedData = await courseServices.assignTeachersInCourseIntoDB(
+    id,
+    req.body
+  );
+  res.status(200).json({
+    success: true,
+    message: "assign teachers in course successfully!",
+    data: insertedData,
+  });
+});
+
+const removeTeachersFromCourse = catchAsync(async (req, res, _next) => {
+  const { id } = req.params;
+  const updatedData = await courseServices.removeTeachersFromCourseFromDB(
+    id,
+    req.body
+  );
+  res.status(200).json({
+    success: true,
+    message: "remove teachers in course successfully!",
+    data: updatedData,
+  });
+});
+
 export default {
   createACourse,
   getAllCourses,
   getACourse,
   deleteACourse,
   updateACourse,
+  assignTeachersInCourse,
+  removeTeachersFromCourse,
 };
