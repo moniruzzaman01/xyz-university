@@ -7,7 +7,7 @@ const srRouter = Router();
 
 srRouter.post(
   "/create-semester-registration",
-  validateRequest(srValidations.createSemesterRegistrationValidationSchema),
+  // validateRequest(srValidations.createSemesterRegistrationValidationSchema),
   srController.createSemesterRegistration
 );
 
