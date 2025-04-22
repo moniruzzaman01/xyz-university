@@ -9,6 +9,7 @@ const createSemesterRegistrationValidationSchema = z.object({
     endDate: z.string().datetime(),
     minCredit: z.number().default(3),
     maxCredit: z.number().default(15),
+    isDeleted: z.boolean().default(false),
   }),
 });
 

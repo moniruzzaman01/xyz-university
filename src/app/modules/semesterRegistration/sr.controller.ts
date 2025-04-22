@@ -12,6 +12,16 @@ const createSemesterRegistration = catchAsync(async (req, res, _next) => {
   });
 });
 
+const getAllSemesterRegistration = catchAsync(async (req, res, _next) => {
+  const result = await srService.getAllSemesterRegistrationFromDB(req.query);
+  res.status(200).json({
+    success: true,
+    message: "all semester registration fetched successfully!",
+    data: result,
+  });
+});
+
 export default {
   createSemesterRegistration,
+  getAllSemesterRegistration,
 };

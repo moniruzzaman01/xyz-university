@@ -1,3 +1,4 @@
+import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../utils/AppError";
 import Semester from "../semester/semester.model";
 import { Status } from "./sr.constant";
@@ -32,6 +33,13 @@ const createSemesterRegistrationIntoDB = async (
   return await SemesterRegistration.create(payload);
 };
 
+const getAllSemesterRegistrationFromDB = async (
+  query: Record<string, unknown>
+) => {
+  return await new QueryBuilder(SemesterRegistration.find(), query).build();
+};
+
 export const srService = {
   createSemesterRegistrationIntoDB,
+  getAllSemesterRegistrationFromDB,
 };

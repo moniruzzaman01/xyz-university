@@ -10,5 +10,10 @@ srRouter.post(
   // validateRequest(srValidations.createSemesterRegistrationValidationSchema),
   srController.createSemesterRegistration
 );
+srRouter.get(
+  "/",
+  // validateRequest(srValidations.createSemesterRegistrationValidationSchema),
+  srController.getAllSemesterRegistration
+);
 
 export default srRouter;
